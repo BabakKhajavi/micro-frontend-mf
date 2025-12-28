@@ -6,7 +6,7 @@ import { extendedStore } from '@/state/store';
 import App from '@/App';
 import { AppThemeProvider } from './providers/theme-provider';
 
-const root = ReactDOM.createRoot(document.getElementById('root')!);
+const root = ReactDOM.createRoot(document.getElementById('host-root')!);
 
 const Root: React.FC = () => {
   return (

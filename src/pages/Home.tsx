@@ -2,7 +2,6 @@ import { extendedStore } from '@/state/store';
 import React, { useEffect } from 'react';
 import { ThemeHeader } from './Header';
 const LoginPage = React.lazy(() => import('auth/LoginPage'));
-
 export default function HomePage() {
   useEffect(() => {
     import('auth/authReducer').then((mod) => {
@@ -16,7 +15,7 @@ export default function HomePage() {
     <div>
       <React.Suspense fallback={<div>Loading Login Page...</div>}>
         <ThemeHeader currentThemeKey="localhost:9000" />
-        <h2>Host Home Page 12</h2>
+        <h2>Host Home Page 40</h2>
         <LoginPage />
       </React.Suspense>
     </div>

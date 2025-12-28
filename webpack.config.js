@@ -2,9 +2,12 @@ import { fileURLToPath } from 'url';
 import path from 'path';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import webpack from 'webpack';
+import ReactRefreshWebpackPlugin from '@pmmmwh/react-refresh-webpack-plugin';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+
+const isDev = true;
 
 export default {
   entry: './src/index.tsx',
@@ -40,15 +43,14 @@ export default {
     new HtmlWebpackPlugin({
       template: './public/index.html',
     }),
+    isDev && new ReactRefreshWebpackPlugin(),
     new webpack.container.ModuleFederationPlugin({
       name: 'host',
       filename: 'remoteEntry.js',
       remotes: {
         auth: 'auth@http://localhost:9001/remoteEntry.js',
       },
-      exposes: {
-        // './store': './src/state/store.ts',
-      },
+      exposes: {},
       shared: {
         react: { singleton: true, eager: false, requiredVersion: false },
         'react-dom': { singleton: true, eager: false, requiredVersion: false },
@@ -61,5 +63,5 @@ export default {
         '@emotion/styled': { singleton: true, requiredVersion: false },
       },
     }),
-  ],
+  ].filter(Boolean),
 };
