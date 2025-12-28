@@ -34,11 +34,11 @@ export const ThemeHeader: React.FC<ThemeHeaderProps> = ({
   const [loading, setLoading] = React.useState(false);
 
   // TODO: replace with your real theme keys
-  const availableThemes: string[] = [
-    'localhost:9000',
-    'cicd',
-    'rbcroyalbank',
-    'td',
+  const availableThemes = [
+    { label: 'Local Host', value: 'localhost:9000' },
+    { label: 'CICD Bank', value: 'cicd' },
+    { label: 'RBC Royal Bank', value: 'rbcroyalbank' },
+    { label: 'TD Bank', value: 'td' },
   ];
 
   const handleChange = async (event: SelectChangeEvent<string>) => {
@@ -100,9 +100,9 @@ export const ThemeHeader: React.FC<ThemeHeaderProps> = ({
               },
             }}
           >
-            {availableThemes.map((key) => (
-              <MenuItem key={key} value={key}>
-                {key}
+            {availableThemes.map(({ label, value }) => (
+              <MenuItem key={value} value={value}>
+                {label}
               </MenuItem>
             ))}
           </Select>

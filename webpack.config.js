@@ -16,6 +16,7 @@ export default {
     port: 9000,
     historyApiFallback: true,
     hot: true,
+    open: true,
   },
   output: {
     publicPath: 'auto',
