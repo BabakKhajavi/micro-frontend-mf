@@ -1,33 +1,21 @@
-import React from "react";
-import ReactDOM from "react-dom/client";
-import { Provider } from "react-redux";
-import { ThemeProvider, CssBaseline } from "@mui/material";
+import React, { use } from 'react';
+import ReactDOM from 'react-dom/client';
+import { Provider } from 'react-redux';
 
-import { store } from "@/state/store";
-import { createAppTheme } from "@/theme/createAppTheme";
-import App from "@/App";
+import { extendedStore } from '@/state/store';
+import App from '@/App';
+import { AppThemeProvider } from './providers/theme-provider';
 
-async function loadTenantConfig() {
-  // Later: fetch from API/CDN
-  return {
-    primaryColor: "#1976d2",
-    secondaryColor: "#ff4081",
-    borderRadius: 8
-  };
-}
+const root = ReactDOM.createRoot(document.getElementById('root')!);
 
-const root = ReactDOM.createRoot(document.getElementById("root")!);
-
-(async () => {
-  const tenantConfig = await loadTenantConfig();
-  const theme = createAppTheme(tenantConfig);
-
-  root.render(
-    <Provider store={store}>
-      <ThemeProvider theme={theme}>
-        <CssBaseline />
+const Root: React.FC = () => {
+  return (
+    <Provider store={extendedStore}>
+      <AppThemeProvider>
         <App />
-      </ThemeProvider>
+      </AppThemeProvider>
     </Provider>
   );
-})();
+};
+
+root.render(<Root />);

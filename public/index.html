@@ -3,6 +3,39 @@
   <head>
     <meta charset="UTF-8" />
     <title>Micro Frontend Host</title>
+
+    <script>
+      window.__themeConfig = null;
+
+      (function () {
+        // "localhost:9000"
+        const hostWithPort = window.location.host;
+
+        // "localhost%3A9000"
+        const safeKey = encodeURIComponent(hostWithPort);
+
+        const BUCKET_BASE =
+          'https://branding-configs.s3.us-east-1.amazonaws.com';
+
+        // Object key is "localhost:9000.json" at bucket root
+        const themeUrl = `${BUCKET_BASE}/${safeKey}.json`;
+
+        var request = new XMLHttpRequest();
+        request.open('GET', themeUrl, false);
+        request.send(null);
+
+        if (request.status === 200) {
+          window.__themeConfig = JSON.parse(request.responseText);
+        } else {
+          console.error(
+            'Theme not found for host:',
+            hostWithPort,
+            'status:',
+            request.status,
+          );
+        }
+      })();
+    </script>
   </head>
   <body>
     <div id="root"></div>

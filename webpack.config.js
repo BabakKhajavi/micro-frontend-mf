@@ -37,14 +37,17 @@ export default {
     ],
   },
   plugins: [
+    new HtmlWebpackPlugin({
+      template: './public/index.html',
+    }),
     new webpack.container.ModuleFederationPlugin({
       name: 'host',
       filename: 'remoteEntry.js',
       remotes: {
-        // will add remotes in Step 6
+        auth: 'auth@http://localhost:9001/remoteEntry.js',
       },
       exposes: {
-        './store': './src/state/store.ts',
+        // './store': './src/state/store.ts',
       },
       shared: {
         react: { singleton: true, eager: false, requiredVersion: false },
@@ -57,9 +60,6 @@ export default {
         '@emotion/react': { singleton: true, requiredVersion: false },
         '@emotion/styled': { singleton: true, requiredVersion: false },
       },
-    }),
-    new HtmlWebpackPlugin({
-      template: './public/index.html',
     }),
   ],
 };

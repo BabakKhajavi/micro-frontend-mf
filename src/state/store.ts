@@ -4,9 +4,9 @@ import {
   combineReducers,
   Reducer,
   AnyAction,
-} from "@reduxjs/toolkit";
+} from '@reduxjs/toolkit';
 
-import { staticReducers, apiSlices } from "./root-reducer";
+import { staticReducers, apiSlices } from './root-reducer';
 
 // 1. Type for async reducers
 export type AsyncReducers = {
@@ -31,20 +31,22 @@ export const createReducer = (asyncReducers: AsyncReducers = {}) =>
 export const store = configureStore({
   reducer: createReducer(),
   middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware().concat(
-      ...apiSlices.map((api) => api.middleware)
-    ),
+    getDefaultMiddleware().concat(...apiSlices.map((api) => api.middleware)),
 });
 
-// 5. Extend the store type to include asyncReducers + injectReducer
+// 5. Extend the store type to include asyncReducers + injectors
 export type ExtendedStore = typeof store & {
   asyncReducers: AsyncReducers;
+  injectedApiSlices: Record<string, boolean>;
   injectReducer: (key: string, reducer: Reducer) => void;
+  injectApiSlice: (api: ApiSliceType) => void;
 };
 
 // 6. Cast store to ExtendedStore
 (store as ExtendedStore).asyncReducers = {};
+(store as ExtendedStore).injectedApiSlices = {};
 
+// 7. Dynamic reducer injection
 (store as ExtendedStore).injectReducer = (key: string, reducer: Reducer) => {
   const extended = store as ExtendedStore;
 
@@ -52,6 +54,25 @@ export type ExtendedStore = typeof store & {
     extended.asyncReducers[key] = reducer;
     store.replaceReducer(createReducer(extended.asyncReducers));
   }
+};
+
+// 8. Dynamic RTK Query API slice injection
+(store as ExtendedStore).injectApiSlice = (api: ApiSliceType | undefined) => {
+  if (!api) return; // 🔥 prevents "reading reducerPath of undefined"
+
+  const extended = store as ExtendedStore;
+
+  if (extended.injectedApiSlices[api.reducerPath]) return;
+
+  // inject reducer
+
+  extended.injectReducer(api.reducerPath, api.reducer);
+
+  // inject middleware
+  // @ts-ignore
+  store.middleware = store.middleware.concat(api.middleware);
+
+  extended.injectedApiSlices[api.reducerPath] = true;
 };
 
 export type RootState = ReturnType<typeof store.getState>;

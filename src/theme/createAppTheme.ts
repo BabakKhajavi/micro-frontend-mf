@@ -1,19 +1,9 @@
-import { createTheme } from "@mui/material";
+import { createTheme, ThemeOptions, Theme } from '@mui/material/styles';
 
-interface TenantConfig {
-    primaryColor?: string;
-    secondaryColor?: string;
-    borderRadius?: number;
-}
+export type TenantThemeConfig = ThemeOptions;
 
-export function createAppTheme(tenantConfig: TenantConfig) {
-    return createTheme({
-        palette: {
-            primary: { main: tenantConfig.primaryColor || "#1976d2" },
-            secondary: { main: tenantConfig.secondaryColor || "#ff4081" }
-        },
-        shape: {
-            borderRadius: tenantConfig.borderRadius || 8
-        }
-    });
+export function createAppTheme(tenantConfig: TenantThemeConfig): Theme {
+  return createTheme({
+    ...tenantConfig,
+  });
 }
